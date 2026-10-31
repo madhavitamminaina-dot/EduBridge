@@ -11,7 +11,9 @@ const app = express();
 const PORT = Number(process.env.PORT || 3000);
 const ROOT = __dirname;
 const DATA = path.join(ROOT, 'data');
-const UPLOADS = path.join(ROOT, 'uploads');
+const UPLOADS = process.env.VERCEL
+  ? path.join('/tmp', 'edubridge-uploads')
+  : path.join(ROOT, 'uploads');
 for (const dir of [DATA, UPLOADS]) fs.mkdirSync(dir, { recursive: true });
 const files = { users: 'users.json', doubts: 'doubts.json', resources: 'resources.json', sessions: 'sessions.json', exchanges: 'exchanges.json', reports: 'reports.json', messages: 'messages.json' };
 function read(name) { const p = path.join(DATA, files[name]); if (!fs.existsSync(p)) fs.writeFileSync(p, '[]'); try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return []; } }
